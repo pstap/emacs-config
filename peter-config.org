@@ -1,0 +1,142 @@
+#+TITLE: Peter's Emacs config
+
+
+* GUI
+- Set the font and the theme.
+- sublime-themes package contains the `graham` theme
+#+BEGIN_SRC elisp
+  (set-face-attribute 'default nil :font "Deja Vu Sans Mono-14")
+
+  (use-package sublime-themes
+    :ensure t)
+
+  ;; (load-theme 'graham t)
+  (load-theme 'habamax t)
+
+  (menu-bar-mode -1)     ;; no menu bar
+  (toggle-scroll-bar -1) ;; no scroll bar
+  (tool-bar-mode -1)     ;; no tool bar
+  (blink-cursor-mode 0)  ;; no blinking cursor
+#+END_SRC
+
+* LSP
+#+BEGIN_SRC elisp
+  (use-package lsp-mode
+    :ensure t
+    :defer t)
+
+  ;; Enable logging for lsp-mode
+  (setq lsp-log-io t)
+
+  (use-package lsp-ui
+    :ensure t
+    :defer t)
+ 
+  (setq lsp-ui-sideline-enable t)
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-position 'bottom)
+
+#+END_SRC
+
+* Company
+#+BEGIN_SRC elisp
+  (use-package company
+    :ensure t
+    :defer t
+    :config
+    (global-company-mode t))
+#+END_SRC
+
+* Yasnippit
+#+begin_src elisp
+  (use-package yasnippet
+    :ensure t
+    :defer t)
+
+  ;; Require and enable the Yasnippet templating system
+  (yas-global-mode t)
+#+end_src
+
+* Projectile
+#+BEGIN_SRC elisp
+  (use-package projectile
+    :ensure t
+    :diminish t    
+    :bind-keymap
+    ("C-c p" . projectile-command-map))
+  (setq projectile-project-search-path '("~/dev/" "~/src/"))
+  (projectile-mode 1)
+#+END_SRC
+
+
+* Programming Languages
+** Scheme
+- Use Geiser for scheme
+- Geiser is configured to use Chez by default
+#+BEGIN_SRC elisp
+  (use-package geiser
+    :ensure t
+    :defer t
+    :diminish t)
+
+  (setq geiser-active-implementations '(chez)
+	geiser-repl-send-on-return-p nil
+	geiser-default-implementation 'chez)
+#+END_SRC
+
+** Erlang
+#+begin_src elisp
+    (setq load-path (cons  "/usr/lib/erlang/lib/tools-3.4.4/emacs" load-path))
+    (setq erlang-root-dir "/usr/lib/erlang")
+    (setq exec-path (cons "/usr/lib/erlang/bin" exec-path))
+    (require 'erlang-start)
+
+  ;; Enable LSP for Erlang files
+  (add-hook 'erlang-mode-hook #'lsp)
+
+  ;; Show line and column numbers
+  (add-hook 'erlang-mode-hook 'linum-mode)
+  (add-hook 'erlang-mode-hook 'column-number-mode)
+#+end_src
+
+* Org Mode
+#+BEGIN_SRC elisp
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((scheme . t)))
+
+    (use-package plantuml-mode
+      :ensure t
+      :diminish t
+      :config
+      (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+      (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+      (setq plantuml-default-exec-mode 'executable))
+#+END_SRC 
+
+* Paredit
+- Use paredit in scheme and elisp modes
+#+begin_src elisp
+  (use-package paredit
+    :ensure t
+    :defer t)
+  (add-hook 'scheme-mode-hook #'enable-paredit-mode)
+  (add-hook 'elisp-mode-hook #'enable-paredit-mode)
+#+end_src
+
+* Misc Other settings
+#+begin_src elisp
+  ;; display “lambda” as “λ”
+  (global-prettify-symbols-mode 1)
+
+  ;; save 2 chars
+  (defalias 'yes-or-no-p 'y-or-n-p)
+
+  (use-package centered-window :ensure t)
+
+  ;; No more backup files
+  (setq make-backup-files nil)
+#+end_src
+
+
+
